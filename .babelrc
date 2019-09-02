@@ -1,0 +1,10 @@
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react" // 增加React的babel preset配置
+  ],
+  /*
+   * 一个plugin可以理解为对应一个功能
+   */
+  "plugins": []
+}

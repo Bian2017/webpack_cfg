@@ -29,8 +29,26 @@ module.exports = {
      */
     rules: [
       {
-        test: /\.txt$/,
-        use: 'raw-loader'
+        test: /\.js$/,
+        use: 'babel-loader' // 解析ES6，配置文件
+      },
+      {
+        test: /\.css$/,
+        /**
+         * 注意：loader调用是链式调用，执行顺序是从右到左。
+         */
+        use: [
+          'style-loader', // 将样式通过<style>标签插入到head中
+          'css-loader' // 用于加载.css文件，并且转换成commonJS对象
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'less-loader' // 用于将less转换成css。less-loader依赖于less，所以需安装下less。
+        ]
       }
     ]
   },
