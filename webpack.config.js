@@ -55,11 +55,18 @@ module.exports = {
        */
       {
         test: /\.(png|jpg|gif|jpeg)$/,
-        use: ['file-loader'] //用于处理文件，也可以处理字体
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 102400 // 10K大小。如果资源小于10K大小，webpack打包的时候会自动对它进行base64编码。
+            }
+          }
+        ]
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: ['file-loader']
+        use: ['file-loader'] //用于处理文件，也可以处理字体
       }
     ]
   },
