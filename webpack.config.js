@@ -49,6 +49,17 @@ module.exports = {
           'css-loader',
           'less-loader' // 用于将less转换成css。less-loader依赖于less，所以需安装下less。
         ]
+      },
+      /**
+       * url-loader也可以处理图片和字体。可以设置较小资源自动转base64，从而减少网络请求。
+       */
+      {
+        test: /\.(png|jpg|gif|jpeg)$/,
+        use: ['file-loader'] //用于处理文件，也可以处理字体
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: ['file-loader']
       }
     ]
   },
