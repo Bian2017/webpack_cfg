@@ -7,7 +7,7 @@ class Search extends Component {
   render() {
     return (
       <div>
-        <p className="search">搜索</p>
+        <p className="search">搜索文件</p>
         <img src={pencilImg} />
       </div>
     )

@@ -3,6 +3,22 @@
 const path = require('path')
 
 module.exports = {
+  /**
+   * 文件监听的原理分析:
+   *
+   * 轮询判断文件的最后编辑时间是否变化。某个文件发生了变化，并不会立刻告诉监听者，而是先缓存起来，等aggregateTimeout。
+   */
+  // watch: true, //另外一种方式：启动webpack命令，带上 --watch 参数
+
+  // 只有开启监听模式时，watchOptions才有意义
+  watchOptions: {
+    // 默认为空，不监听的文件或者文件夹，支持正则匹配。忽视node_modules会提升文件监听性能。
+    ignored: /node_modules/,
+    // 监听到变化发生后会等300ms再去执行，默认300ms
+    aggregateTimeout: 300,
+    // 判断文件是否发生变化是通过不停询问系统指定文件有没有变化实现的，默认每秒问1000次
+    poll: 1000
+  },
   entry: {
     index: './src/index.js',
     search: './src/search.js'
@@ -59,7 +75,7 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: 102400 // 10K大小。如果资源小于10K大小，webpack打包的时候会自动对它进行base64编码。
+              limit: 10240 // 10K大小。如果资源小于10K大小，webpack打包的时候会自动对它进行base64编码。
             }
           }
         ]
