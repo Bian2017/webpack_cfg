@@ -1,6 +1,7 @@
 'use strict'
 
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   /**
@@ -91,5 +92,18 @@ module.exports = {
    *
    * Plugins作用于整个构建过程。
    */
-  plugins: []
+  plugins: [
+    // 启用热替换模块(Hot Module Replacement)，配合webpack-dev-server一起使用
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  /**
+   * webpack-dev-server
+   *
+   * WDS 不刷新浏览器
+   * WDS 不输出文件，而是放在内存中
+   */
+  devServer: {
+    contentBase: './dist', // webpack-dev-server服务的基础目录
+    hot: true
+  }
 }
