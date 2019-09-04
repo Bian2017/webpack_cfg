@@ -26,6 +26,19 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'dist'),
+    /**
+     * 注意三种文件指纹的区别
+     *
+     * Hash: 和整个项目的构建有关，只要项目文件有修改，整个项目构建的hash值就会更改。
+     * 示例：比方打包两个页面，修改了A页面的JS，即使没修改B页面的JS，B页面JS的hash值也会发生变化。
+     *
+     * Chunkhash: 和 webpack 打包的 chunk(模块) 有关，不同的 entry 会生成不同的 chunkhash 值。
+     * 示例：每个页面如果有一个文件发生了变化，并不会影响其他页面，因此对于JS指纹会采用chunkhash。
+     *
+     * ContentHash: 根据文件内容来定义hash，文件内容不变，则 contenthash 不变。
+     * 示例：某个页面既有JS资源，又有CSS资源。假设CSS资源采用Chunkhash，当修改了页面JS而CSS文件内容并没有变化，
+     * 此时依旧会生成新的Chunkhash，无法利用缓存机制进行缓存。故针对CSS文件，会采用ContentHash。
+     */
     filename: '[name].js' // 通过占位符确保文件名称的唯一
   },
   /**
@@ -33,7 +46,7 @@ module.exports = {
    *
    * 设置 mode 可以使用webpack内置的函数，默认值是production。
    */
-  mode: 'production',
+  mode: 'development',
   /**
    * webpack 开箱即用只支持JS和JSON两种文件类型，通过Loaders去支持其他文件类型并且把它们转化为有效的模块，并且添加到依赖图中。
    *
@@ -75,15 +88,26 @@ module.exports = {
         use: [
           {
             loader: 'url-loader',
+            /**
+             * 注意图片、字体的hash是指文件内容的hash，与之前提到的CSS的contentHash类似。
+             */
             options: {
-              limit: 10240 // 10K大小。如果资源小于10K大小，webpack打包的时候会自动对它进行base64编码。
+              limit: 10240, // 10K大小。如果资源小于10K大小，webpack打包的时候会自动对它进行base64编码。
+              name: '[name]_[hash:8].[ext]' // ext：资源后缀名
             }
           }
         ]
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: ['file-loader'] //用于处理文件，也可以处理字体
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name]_[hash:8].[ext]' // ext：资源后缀名
+            }
+          }
+        ] //用于处理文件，也可以处理字体
       }
     ]
   },
