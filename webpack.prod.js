@@ -2,24 +2,10 @@
 
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  /**
-   * 文件监听的原理分析:
-   *
-   * 轮询判断文件的最后编辑时间是否变化。某个文件发生了变化，并不会立刻告诉监听者，而是先缓存起来，等aggregateTimeout。
-   */
-  // watch: true, //另外一种方式：启动webpack命令，带上 --watch 参数
-
-  // 只有开启监听模式时，watchOptions才有意义
-  watchOptions: {
-    // 默认为空，不监听的文件或者文件夹，支持正则匹配。忽视node_modules会提升文件监听性能。
-    ignored: /node_modules/,
-    // 监听到变化发生后会等300ms再去执行，默认300ms
-    aggregateTimeout: 300,
-    // 判断文件是否发生变化是通过不停询问系统指定文件有没有变化实现的，默认每秒问1000次
-    poll: 1000
-  },
   entry: {
     index: './src/index.js',
     search: './src/search.js'
@@ -123,6 +109,46 @@ module.exports = {
     // 这个时候并没有独立的css文件。因此通常需要MiniCssExtractPlugin插件将css文件提取出来作为一个独立的文件。
     new MiniCssExtractPlugin({
       filename: '[name]_[contenthash:8].css'
+    }),
+
+    /**
+     * 压缩CSS
+     */
+    new OptimizeCSSAssetsPlugin({
+      assetNameRegExp: /\.css$/g, // 匹配所有的css文件后再有CSS处理器进行压缩
+      cssProcessor: require('cssnano') // 预处理器
+    }),
+
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src/search.html'), //HTML模板文件所在位置
+      filename: 'search.html', // 打包出来的HTML文件名称
+      chunks: ['search'], // 指定生成的HTML要使用哪些chunk
+      inject: true, // 打包的chunk，像JS、CSS会自动注入HTML中
+      // 压缩HTML
+      minify: {
+        html5: true,
+        collapseWhitespace: true, // 移除空格
+        preserveLineBreaks: false,
+        minifyCSS: true,
+        minifyJS: true,
+        removeComments: true // 移除注释
+      }
+    }),
+
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src/index.html'), //HTML模板文件所在位置
+      filename: 'index.html', // 打包出来的HTML文件名称
+      chunks: ['index'], // 指定生成的HTML要使用哪些chunk
+      inject: true, // 打包的chunk，像JS、CSS会自动注入HTML中
+      // 压缩HTML
+      minify: {
+        html5: true,
+        collapseWhitespace: true,
+        preserveLineBreaks: false,
+        minifyCSS: true,
+        minifyJS: true,
+        removeComments: false
+      }
     })
   ]
 }
