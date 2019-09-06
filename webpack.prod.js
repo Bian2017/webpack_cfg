@@ -4,6 +4,7 @@ const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -149,6 +150,14 @@ module.exports = {
         minifyJS: true,
         removeComments: false
       }
-    })
+    }),
+
+    /**
+     * 每次构建的时候不会清理目录，造成构建的输出目录output文件越来越多
+     *
+     * + rm -rf ./dist && webpack --- 不够优雅
+     * + clean-webpack-plugin: 默认会删除output指定的输出目录，避免手动删除dist
+     */
+    new CleanWebpackPlugin()
   ]
 }
