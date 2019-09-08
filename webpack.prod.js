@@ -102,6 +102,10 @@ module.exports = {
            * 可借助px2rem-loader工具，它会将px自动转成rem。转换成rem之后，还需知道1个rem单位代表多少个px。
            * 这时需在页面打开的时候，动态地计算根元素的font-size的值。手淘的lib-flexible库(必须通过内联方式引用)
            * 会自动根据当前设备的宽高来计算根元素实际的font-size的值。
+           *
+           * 有些样式不想进行转化:
+           * + 可以用/*no*\/这种注释语法，如：font-size: 12px; /*no*\/
+           * + 可以设置 exclude 的，可以把 node_modules 里面的模块 exclude 掉
            */
           {
             loader: 'px2rem-loader',
