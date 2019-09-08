@@ -66,7 +66,33 @@ module.exports = {
           // 'style-loader',
           MiniCssExtractPlugin.loader, // 与style-loader是互斥的，一个是提取css成为一个独立文件，一个是将css插入页面中
           'css-loader',
-          'less-loader' // 用于将less转换成css。less-loader依赖于less，所以需安装下less。
+          'less-loader', // 用于将less转换成css。less-loader依赖于less，所以需安装下less。
+
+          /**
+           * CSS3的属性为什么需要前缀？因为浏览器的标准并未完全统一。
+           *
+           * 目前主流四种浏览器内核：
+           * + IE (内核Trident，要兼容该内核，编写的CSS需要加前缀-ms)
+           * + 火狐 (内核Geko，要兼容该内核，编写的CSS需要加前缀前缀-moz)
+           * + Chrome (内核Webkit，要兼容该内核，编写的CSS需要加前缀前缀-webkit)
+           * + Opera (内核Presto，要兼容该内核，编写的CSS需要加前缀前缀-o)
+           */
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [
+                /**
+                 * autoprefixer 插件可以自动补齐CSS3前缀，与 postcss-loader一起配合使用。
+                 * 该插件是CSS的后处理器，而less-loader是预处理器，其中预处理器是指打包前进行处理，
+                 * 后处理器是指样式处理(代码最终生成)之后，再对它进行后续处理。
+                 */
+                require('autoprefixer')({
+                  // 指定兼容浏览器的版本
+                  overrideBrowserslist: ['last 2 version', '>1%', 'ios 7'] // 参数一表示兼容最近两个版本，参数二指定浏览器版本使用人数所占的比例, 参数三表示兼容IOS 7版本以上
+                })
+              ]
+            }
+          }
         ]
       },
       /**
