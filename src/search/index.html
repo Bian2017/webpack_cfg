@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <!-- 默认模板引擎是ejs模板引擎，所以可以使用${}语法。 -->
-    ${require('raw-loader!./meta.html')}
+    ${require('raw-loader!../meta.html')}
     <title>Document</title>
     <!-- 计算根元素rem的相对单位，也就是根元素HTML节点在实际设备的屏幕的分辨率后它的font-size大小 -->
     <script>
-      ${require('raw-loader!babel-loader!../node_modules/lib-flexible/flexible.js')}
+      ${require('raw-loader!babel-loader!../../node_modules/lib-flexible/flexible.js')}
     </script>
   </head>
   <body>
