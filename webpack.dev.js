@@ -1,8 +1,58 @@
 'use strict'
 
 const path = require('path')
+const glob = require('glob')
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
+/**
+ * 多页面应用(MPA)概念：每一次页面跳转的时候，后台服务器都会返回一个新的HTML文档。这种类型的
+ * 网站就是多页网站，也叫多页应用。
+ *
+ * 多页面打包通用方案：动态获取entry和设置html-webpack-plugin数量。
+ * 约定：将入口文件都设置成index.js，模板文件设置成index.html
+ */
+const setMPA = () => {
+  const entry = {}
+  const htmlWebpackPlugins = []
+
+  // 以同步的方式把文件查询出来。
+  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'))
+
+  Object.keys(entryFiles).map(index => {
+    const entryFile = entryFiles[index]
+    const match = entryFile.match(/src\/(.*)\/index\.js/)
+    const pageName = match && match[1]
+
+    entry[pageName] = entryFile
+
+    htmlWebpackPlugins.push(
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, `src/${pageName}/index.html`), //HTML模板文件所在位置
+        filename: `${pageName}.html`, // 打包出来的HTML文件名称
+        chunks: [pageName], // 指定生成的HTML要使用哪些chunk
+        inject: true, // 打包的chunk，像JS、CSS会自动注入HTML中
+        // 压缩HTML
+        minify: {
+          html5: true,
+          collapseWhitespace: true, // 移除空格
+          preserveLineBreaks: false,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: true // 移除注释
+        }
+      })
+    )
+  })
+
+  return {
+    entry,
+    htmlWebpackPlugins
+  }
+}
+
+const { entry, htmlWebpackPlugins } = setMPA()
 
 module.exports = {
   /**
@@ -21,10 +71,7 @@ module.exports = {
     // 判断文件是否发生变化是通过不停询问系统指定文件有没有变化实现的，默认每秒问1000次
     poll: 1000
   },
-  entry: {
-    index: './src/index.js',
-    search: './src/search.js'
-  },
+  entry,
   output: {
     path: path.join(__dirname, 'dist'),
     /**
@@ -128,7 +175,7 @@ module.exports = {
      * + clean-webpack-plugin: 默认会删除output指定的输出目录，避免手动删除dist
      */
     new CleanWebpackPlugin()
-  ],
+  ].concat(htmlWebpackPlugins),
   /**
    * webpack-dev-server
    *
