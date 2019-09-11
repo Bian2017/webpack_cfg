@@ -5,6 +5,7 @@ const glob = require('glob')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 /**
@@ -219,6 +220,26 @@ module.exports = {
      * + rm -rf ./dist && webpack --- 不够优雅
      * + clean-webpack-plugin: 默认会删除output指定的输出目录，避免手动删除dist
      */
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+
+    /**
+     * 基础库分离
+     *
+     * 将react、react-dom基础包通过cdn引入，不打入bundle中。
+     */
+    new HtmlWebpackExternalsPlugin({
+      externals: [
+        {
+          module: 'react',
+          entry: 'https://11.url.cn/now/lib/16.2.0/react.min.js', // 对于基础的包，一般是上传到CDN上
+          global: 'React'
+        },
+        {
+          module: 'react-dom',
+          entry: 'https://11.url.cn/now/lib/16.2.0/react-dom.min.js',
+          global: 'ReactDom'
+        }
+      ]
+    })
   ].concat(htmlWebpackPlugins)
 }
