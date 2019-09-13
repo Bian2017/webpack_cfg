@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ReactDom from 'react-dom'
+import ReactDOM from 'react-dom'
 import pencilImg from './assets/pen.png'
 import './search.less'
 
@@ -14,4 +14,4 @@ class Search extends Component {
   }
 }
 
-ReactDom.render(<Search />, document.getElementById('root'))
+ReactDOM.render(<Search />, document.getElementById('root'))

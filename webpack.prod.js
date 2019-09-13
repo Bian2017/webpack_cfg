@@ -226,18 +226,19 @@ module.exports = {
      * 基础库分离
      *
      * 将react、react-dom基础包通过cdn引入，不打入bundle中。
+     * 注意：除了使用插件外，还可以使用webpack自身的externals属性。
      */
     new HtmlWebpackExternalsPlugin({
       externals: [
         {
-          module: 'react',
+          module: 'react', // 打包应排除的模块
           entry: 'https://11.url.cn/now/lib/16.2.0/react.min.js', // 对于基础的包，一般是上传到CDN上
-          global: 'React'
+          global: 'React' // 为了替换这个模块，React的值将被用来检索一个全局的 React 变量。换句话说，当设置为一个字符串时，它将被视为全局的。
         },
         {
           module: 'react-dom',
           entry: 'https://11.url.cn/now/lib/16.2.0/react-dom.min.js',
-          global: 'ReactDom'
+          global: 'ReactDOM'
         }
       ]
     })
