@@ -76,9 +76,43 @@ module.exports = {
     filename: '[name]_[chunkhash:8].js' // 通过占位符确保文件名称的唯一
   },
   /**
-   * Mode 用于指定当前的构建环境是：production、development还是none。
+   * 一、Mode 用于指定当前的构建环境是：production、development还是none。
+   * +  设置 mode 可以使用webpack内置的函数，默认值是production。
    *
-   * 设置 mode 可以使用webpack内置的函数，默认值是production。
+   * 二、Tree shaking(摇树优化)
+   * 概念：1个模块可能有多个方法，只要其中的某个方法使用到了，则整个文件都会被打到bundle里面去。
+   * tree shaking就是只把用到的方法打入bundle，没有用到的会在uglify阶段被擦除掉。
+   *
+   * 使用：webpack默认支持，在.babelrc里设置modules:false即可。
+   * + production mode的情况下默认开启。
+   *
+   * 要求：必须是ES6的语法，CommonJS的方法不支持。
+   *
+   * 2.1 DCE(dead code elimination)概念
+   *
+   * DCE---擦除未使用的dead code：
+   * + 代码不会被执行，不可到达；
+   * + 代码执行的结果不会被用到；
+   * + 代码只会影响死变量(只写不读)；
+   *
+   * 以上特征统称DCE。Tree shaking利用这一特点从而分析哪些代码需要删除。
+   *
+   * 2.2 Tree-shaking原理
+   *
+   * 利用ES6模块的特点：
+   * + 只能作为模块顶层的语句出现；
+   * + import的模块名只能是字符常量(无法动态设置import内容)；
+   * + import binding是immutable；
+   *
+   * CommonJS不具备以上特点，举例：在不同条件下，可以require不同的模块。
+   *
+   * Tree shaking为什么需具备以上特点？
+   * Tree shaking本质是对模块代码进行静态分析，因此在编译阶段代码是否有用过是需要确定下来的。
+   * Tree shaking针对未使用的代码会进行注释标记，然后在uglify阶段会删除这些注释代码；
+   *
+   * 2.3 注意点
+   *
+   * Tree shaking要求模块里面编写的方法是无副作用的。如果有副作用，Tree shaking会失效。
    */
   mode: 'production',
   /**
