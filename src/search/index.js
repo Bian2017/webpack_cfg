@@ -6,15 +6,33 @@ import { a } from './tree-shaking'
 import './search.less'
 
 class Search extends Component {
+  constructor() {
+    super(...arguments)
+    this.state = {
+      Text: null
+    }
+  }
+
+  loadComponent() {
+    // 动态引入。返回的是一个promise对象。
+    import('./text.js').then(Text => {
+      this.setState({
+        Text: Text.default
+      })
+    })
+  }
+
   render() {
+    const { Text } = this.state
     let test = a()
 
     return (
       <div>
+        {Text ? <Text /> : null}
         {test}
         <p className="search">搜索文件内容</p>
         <img src={pencilImg} />
-        <Button>测试</Button>
+        <Button onClick={this.loadComponent.bind(this)}>测试</Button>
       </div>
     )
   }

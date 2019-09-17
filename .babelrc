@@ -6,5 +6,8 @@
   /*
    * 一个plugin可以理解为对应一个功能
    */
-  "plugins": []
+  "plugins": [
+    // 动态import(目前还没有原生支持，需要babel转换)
+    "@babel/plugin-syntax-dynamic-import"
+  ]
 }
