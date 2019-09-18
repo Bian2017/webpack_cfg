@@ -128,7 +128,11 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: 'babel-loader' // 解析ES6，配置文件
+        use: [
+          // 解析ES6，配置文件
+          'babel-loader',
+          'eslint-loader'
+        ]
       },
       {
         test: /\.css$/,

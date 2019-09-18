@@ -15,7 +15,7 @@ class Search extends Component {
 
   loadComponent() {
     // 动态引入。返回的是一个promise对象。
-    import('./text.js').then(Text => {
+    import('./text.jsx').then(Text => {
       this.setState({
         Text: Text.default
       })
@@ -24,7 +24,7 @@ class Search extends Component {
 
   render() {
     const { Text } = this.state
-    let test = a()
+    const test = a()
 
     return (
       <div>
