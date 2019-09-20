@@ -2,8 +2,8 @@ const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   entry: {
-    'large-number': './src/index.js',
-    'large-number.min': './src/index.js'
+    'large-number': './src/index.js', // 非压缩
+    'large-number.min': './src/index.js' // 压缩
   },
   output: {
     filename: '[name].js',
@@ -12,7 +12,7 @@ module.exports = {
      *
      * library: 指定库的全局变量。
      *
-     *  libraryTarget: 支持库引入的方式。
+     * libraryTarget: 支持库引入的方式。
      */
     library: 'largeNumber', // 打包库的名字
     /**
@@ -21,7 +21,7 @@ module.exports = {
     libraryTarget: 'umd',
     libraryExport: 'default' // 不设置引用会比较麻烦。
   },
-  mode: 'none', // 将mode设置为none，去除所有压缩
+  mode: 'none', // 将mode设置为none，去除所有压缩(有的包不希望被压缩)
   optimization: {
     minimize: true,
     minimizer: [
