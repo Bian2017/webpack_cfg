@@ -20,7 +20,7 @@ const setMPA = () => {
   const htmlWebpackPlugins = []
 
   // 以同步的方式把文件查询出来。
-  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'))
+  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js*'))
 
   Object.keys(entryFiles).map(index => {
     const entryFile = entryFiles[index]
@@ -127,7 +127,7 @@ module.exports = {
      */
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         use: [
           // 解析ES6，配置文件
           'babel-loader',

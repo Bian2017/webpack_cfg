@@ -50,6 +50,7 @@
   "dependencies": {
     "antd": "^3.23.2",
     "lib-flexible": "^0.3.2",
+    "pack-component": "^1.0.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   }
