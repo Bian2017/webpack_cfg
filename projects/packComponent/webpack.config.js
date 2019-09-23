@@ -8,18 +8,39 @@ module.exports = {
   output: {
     filename: '[name].js',
     /**
-     * 如何将库暴露出去？
-     *
-     * library: 指定库的全局变量。
-     *
-     * libraryTarget: 支持库引入的方式。
+     * library: 打包库的名字，即入口文件的返回值。
      */
-    library: 'largeNumber', // 打包库的名字
+    library: 'largeNumber',
     /**
-     * umd --- 这个选项会尝试把库暴露给前使用的模块定义系统，这使其和CommonJS、AMD兼容或者暴露为全局变量。
+     * libraryTarget: 控制 webpack 打包的内容是如何暴露的。需与output.library所绑定的值一起作用。
+     *
+     * umd---这个选项会尝试把库暴露给前使用的模块定义系统，这使其和CommonJS、AMD兼容或者暴露为全局变量。最终输出代码格式如下：
+     *
+     * ```JS
+     *(function webpackUniversalModuleDefinition(root, factory) {
+     *  if(typeof exports === 'object' && typeof module === 'object')
+     *    module.exports = factory();
+     *  else if(typeof define === 'function' && define.amd)
+     *    define([], factory);
+     *  else if(typeof exports === 'object')
+     *    exports["MyLibrary"] = factory();
+     *  else
+     *    root["MyLibrary"] = factory();
+     *})(typeof self !== 'undefined' ? self : this, function() {
+     *  return _entry_return_;
+     *});
+     * ```
      */
     libraryTarget: 'umd',
-    libraryExport: 'default' // 不设置引用会比较麻烦。
+    /**
+     * 入口点的默认导出将分配给库目标。不设置引用会比较麻烦。
+     *
+     * ```JS
+     * // if your entry has a default export of `MyDefaultModule`
+     * var MyDefaultModule = _entry_return_.default;
+     * ```
+     */
+    libraryExport: 'default'
   },
   mode: 'none', // 将mode设置为none，去除所有压缩(有的包不希望被压缩)
   optimization: {
